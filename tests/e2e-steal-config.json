@@ -1,0 +1,15 @@
+{
+  "main": "tests/app/e2e-main",
+  "babelOptions": {
+    "plugins": ["transform-class-properties"]
+  },
+  "map": {
+    "can-globals/is-node/is-node": "./mock-can-globals/is-node",
+    "can-globals/is-browser-window/is-browser-window": "./mock-can-globals/is-browser-window"
+  },
+  "plugins": ["can", "steal-css"],
+  "bundle": [
+    "tests/app/progressive-loading-example/nested-request-example/nested-request-example",
+    "tests/app/progressive-loading-example/nested-timeout-example/nested-timeout-example"
+  ]
+}

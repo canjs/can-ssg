@@ -1,0 +1,9 @@
+progressive-cow {
+  color: green;
+}
+
+.cow-image {
+  height: 300px;
+  width: 300px;
+  border-radius: 16px;
+}

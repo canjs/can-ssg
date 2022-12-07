@@ -1,0 +1,94 @@
+{
+  "assets": ["assets"],
+  "defaultServerMode": "ssg",
+  "defaultEnv": "dev",
+  "environments": {
+    "dev": {
+      "dist": {
+        "basePath": "dev",
+        "static": "static-dev",
+        "assets": "",
+        "entryPoint": "index.html"
+      },
+      "staticBaseUrl": "http://localhost:8080",
+      "entryPoint": "index.html"
+    },
+    "prod": {
+      "prebuild": "prebuild.js",
+      "postbuild": "postbuild.js",
+      "dist": {
+        "mainTag": "<script src=\"/dist/bundles/can-stache-element-ssr/main.js\" main></script>",
+        "basePath": "prod",
+        "static": "static",
+        "assets": "",
+        "entryPoint": "index.html"
+      },
+      "staticBaseUrl": "http://localhost:8080",
+      "entryPoint": "production.html",
+      "serveFromDist": true
+    },
+    "e2e": {
+      "stealConfig": "tests/e2e-steal-config.json",
+      "dist": {
+        "basePath": "e2e",
+        "static": "e2e-static",
+        "assets": "",
+        "entryPoint": "e2e-index.html"
+      },
+      "staticBaseUrl": "http://localhost:8080",
+      "entryPoint": "tests/app/e2e-index.html",
+      "assets": ["tests/app/assets"],
+      "routes": [
+        "/",
+        "/css",
+        "/404",
+        "/timeout",
+        "/request",
+        "/progressive-loading",
+        "/progressive-loading/root",
+        "/progressive-loading/nested-timeout",
+        "/progressive-loading/nested-request",
+        "/unknown",
+        "/not-a-route"
+      ]
+    },
+    "e2e-prod": {
+      "stealConfig": "tests/e2e-steal-config.json",
+      "prebuild": "tests/e2e-prod-prebuild.js",
+      "postbuild": "tests/e2e-prod-postbuild.js",
+      "dist": {
+        "mainTag": "<script src=\"/dist/bundles/tests/app/e2e-main.js\" main></script>",
+        "basePath": "e2e-prod",
+        "static": "e2e-prod-static",
+        "assets": "",
+        "entryPoint": "e2e-prod-index.html"
+      },
+      "staticBaseUrl": "http://localhost:8080",
+      "entryPoint": "tests/app/e2e-index.html",
+      "serveFromDist": true,
+      "assets": ["tests/app/assets"],
+      "routes": [
+        "/",
+        "/css",
+        "/404",
+        "/timeout",
+        "/request",
+        "/progressive-loading",
+        "/progressive-loading/root",
+        "/progressive-loading/nested-timeout",
+        "/progressive-loading/nested-request",
+        "/unknown",
+        "/not-a-route"
+      ]
+    }
+  },
+  "routes": [
+    "/",
+    "/tasks",
+    "/progressive-loading",
+    "/progressive-loading/root",
+    "/progressive-loading/moo",
+    "/progressive-loading/cow",
+    "/404"
+  ]
+}

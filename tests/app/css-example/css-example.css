@@ -1,0 +1,6 @@
+.css-test::after {
+  content: " - Yes!";
+}
+.css-test {
+  background-color: orange;
+}
