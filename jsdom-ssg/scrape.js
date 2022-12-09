@@ -16,7 +16,7 @@ const envConfiguration = getEnvConfiguration(getEnvironment())
 
 // Throw if build takes too long
 const timeout = setTimeout(() => {
-  throw new Error("timed out ):")
+  // throw new Error("timed out ):")
 }, 5000).unref()
 
 /**
@@ -60,6 +60,12 @@ async function populateDocument() {
     const config = await readJson(envConfiguration.stealConfig)
     steal.config(config)
   }
+  debugger
+  steal.config({
+    map: {
+      "can-globals@1.2.2#is-browser-window/is-browser-window": "node_modules/can-ssg/mock-can-globals/is-browser-window",
+    },
+  })
 
   // Run client-side code and load <can-app>
   await steal.startup()

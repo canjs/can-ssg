@@ -28,10 +28,12 @@ module.exports = async function (html, requestUrl) {
   global.history = dom.window.history
 
   global.HTMLElement = dom.window.HTMLElement
+  global.DocumentFragment = dom.window.DocumentFragment
   global.NodeFilter = dom.window.NodeFilter
   global.customElements = dom.window.customElements
   global.document = dom.window.document
   global.location = dom.window.location
+  global.navigator = dom.window.navigator
 
   global.Node = window.Node
 
