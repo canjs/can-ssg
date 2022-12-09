@@ -1,12 +1,18 @@
-const ssgConfiguration = require("../ssg.json")
-
-// Make configuration immutable
-Object.freeze(ssgConfiguration)
+const path = require("path")
 
 /**
  * Returns SSG configuration
  */
-const getSsgConfiguration = () => ssgConfiguration
+let cachedSsgConfiguration
+const getSsgConfiguration = () => {
+  if (!cachedSsgConfiguration) {
+    const ssgConfiguration = require(path.join(process.cwd(), "ssg.json"))
+    // Make configuration immutable
+    Object.freeze(ssgConfiguration)
+    cachedSsgConfiguration = ssgConfiguration
+  }
+  return cachedSsgConfiguration
+}
 
 /**
  * Returns environment configuration
@@ -24,7 +30,7 @@ const getEnvConfiguration = (env) => {
 /**
  * Returns list of environments
  */
-const getEnvironments = () => Object.keys(ssgConfiguration.environments)
+const getEnvironments = () => Object.keys(getSsgConfiguration().environments)
 
 /**
  * Returns routes for a given environment. If the environment doesn't have any routes,
@@ -37,7 +43,7 @@ const getEnvRoutes = (env) => {
     return envConfiguration.routes
   }
 
-  return ssgConfiguration.routes || []
+  return getSsgConfiguration().routes || []
 }
 
 /**
@@ -51,7 +57,7 @@ const getEnvAssets = (env) => {
     return envConfiguration.assets
   }
 
-  return ssgConfiguration.assets || []
+  return getSsgConfiguration().assets || []
 }
 
 module.exports = { getSsgConfiguration, getEnvConfiguration, getEnvironments, getEnvRoutes, getEnvAssets }
