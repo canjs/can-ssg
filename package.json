@@ -54,6 +54,7 @@
     "can-type": "^1.1.6",
     "can-zone": "^1.0.1",
     "can-zone-jsdom": "git+ssh://git@github.com/canjs/can-zone-jsdom#jsdom-19-update",
+    "commander": "^9.4.1",
     "done-ssr": "^3.3.1",
     "fs-extra": "^10.1.0",
     "jsdom": "^20.0.1",
