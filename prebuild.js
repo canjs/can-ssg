@@ -1,6 +1,7 @@
 const stealTools = require("steal-tools")
 const path = require("path")
 const { getEnvConfiguration } = require("./client-helpers/environment-helpers")
+const { readJsonSync } = require("fs-extra")
 
 main()
 
