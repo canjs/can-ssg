@@ -13,7 +13,11 @@ async function main() {
   let config = {}
 
   if (envConfiguration.stealConfig) {
-    config = readJsonSync(envConfiguration.stealConfig)
+    if (typeof envConfiguration.stealConfig === "string") {
+      config = readJsonSync(envConfiguration.stealConfig)
+    } else {
+      config = envConfiguration.stealConfig
+    }
   }
 
   await stealTools.build(config, {
