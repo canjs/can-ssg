@@ -67,7 +67,10 @@ async function populateDocument(envConfiguration) {
   const globalsVersion = (/@(.*)$/.exec(lsOut) || [])[1]
 
   const ssgLsOut = child_process.spawnSync("npm ls can-ssg --parseable", { shell: true }).stdout.toString().replace(/\n/g, "")
-  const ssgBasePath = process.cwd().replace(ssgLsOut, "")
+  let ssgBasePath = path.relative(process.cwd(), ssgLsOut)
+  if (ssgBasePath !== "") {
+    ssgBasePath += "/"
+  }
 
   steal.config({
     map: {
