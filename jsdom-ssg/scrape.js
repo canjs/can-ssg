@@ -62,11 +62,11 @@ async function populateDocument(envConfiguration) {
     steal.config(config)
   }
 
-  const lsOut = child_process.execSync("npm ls can-globals --parseable --long").toString()
+  const lsOut = child_process.execSync("npm ls can-globals --parseable --long").toString().replace(/\n/g, "")
 
   const globalsVersion = (/@(.*)$/.exec(lsOut) || [])[1]
 
-  const ssgLsOut = child_process.spawnSync("npm ls can-ssg --parseable", { shell: true }).stdout.toString()
+  const ssgLsOut = child_process.spawnSync("npm ls can-ssg --parseable", { shell: true }).stdout.toString().replace(/\n/g, "")
   const ssgBasePath = process.cwd().replace(ssgLsOut, "")
 
   steal.config({
