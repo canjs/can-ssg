@@ -6,6 +6,6 @@ const getFlag = require("../util/get-flag")
  * When serving using ssg, you can override to spa
  * by prefixing an environment in the url
  */
-module.exports = function () {
-  return getFlag("SERVER_MODE", "serverMode", "defaultServerMode")
+module.exports = function (cliServerMode) {
+  return getFlag("SERVER_MODE", cliServerMode, "defaultServerMode")
 }

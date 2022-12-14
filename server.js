@@ -3,81 +3,75 @@ const path = require("path")
 const { existsSync } = require("fs-extra")
 const { getEnvironments, getEnvConfiguration } = require("./client-helpers/environment-helpers")
 const argv = require("optimist").argv
-const app = express()
-const defaultEnvironment = require("./jsdom-ssg/flags/get-ssg-environment")()
-const serverMode = require("./jsdom-ssg/flags/get-server-mode")()
 
 // ssg configuration based on environment
 let staticDir = ""
 let entryPointDir = ""
 let envConfiguration = null
 
-setEnvDirs(defaultEnvironment)
-
 const sendFileOr404 = (req, res, reqPath) => {
-  const dest = path.join(__dirname, reqPath)
+  const dest = path.join(process.cwd(), reqPath)
 
   if (existsSync(dest)) {
     res.sendFile(dest)
   } else {
     res.status(404)
-    res.sendFile(path.join(__dirname, staticDir, "/404/index.html"))
+    res.sendFile(path.join(process.cwd(), staticDir, "/404/index.html"))
   }
 }
 
-const environments = getEnvironments()
+module.exports = async function main(options) {
+  const environments = await getEnvironments()
+  const app = express()
+  const defaultEnvironment = await require("./jsdom-ssg/flags/get-ssg-environment")(options.environment)
+  const serverMode = await require("./jsdom-ssg/flags/get-server-mode")(options.serverMode)
+  await setEnvDirs(defaultEnvironment, serverMode)
 
-app.get("/*", function (req, res) {
-  const reqPath = req.path
+  app.get("/*", async function (req, res) {
+    const reqPath = req.path
 
-  const overrideEnvironment = environments.find((env) => reqPath.startsWith(`/${env}`))
+    // Handle files that are local (node_modules, etc) by checking for file extensions (".")
+    if (reqPath.indexOf(".") !== -1) {
+      // Simulate hosting all assets, bundles at one directory inside the dist directory
+      if (envConfiguration.serveFromDist) {
+        sendFileOr404(req, res, path.join(staticDir, reqPath))
+        return
+      }
 
-  if (overrideEnvironment) {
-    setEnvDirs(overrideEnvironment)
-    reqPath.replace(`/${overrideEnvironment}`, "")
-  }
+      // Serve static files from dist, but assets, node_modules/bundles are loaded outside of dist
+      sendFileOr404(req, res, reqPath)
 
-  // Handle files that are local (node_modules, etc) by checking for file extensions (".")
-  if (reqPath.indexOf(".") !== -1) {
-    // Simulate hosting all assets, bundles at one directory inside the dist directory
-    if (envConfiguration.serveFromDist) {
-      sendFileOr404(req, res, path.join(staticDir, reqPath))
       return
     }
 
-    // Serve static files from dist, but assets, node_modules/bundles are loaded outside of dist
-    sendFileOr404(req, res, reqPath)
+    if (serverMode === "spa") {
+      sendFileOr404(req, res, entryPointDir)
+      return
+    }
 
-    return
-  }
+    // Host static files
+    if (serverMode === "ssg") {
+      sendFileOr404(req, res, path.join(staticDir, reqPath, "index.html"))
+      return
+    }
+  })
 
-  if (overrideEnvironment || serverMode === "spa") {
-    sendFileOr404(req, res, entryPointDir)
-    return
-  }
+  // Handle 404 - Keep this as a last route
+  app.use(function (req, res, next) {
+    res.status(404)
+    res.send("404: File Not Found")
+  })
 
-  // Host static files
-  if (serverMode === "ssg") {
-    sendFileOr404(req, res, path.join(staticDir, reqPath, "index.html"))
-    return
-  }
-})
-
-// Handle 404 - Keep this as a last route
-app.use(function (req, res, next) {
-  res.status(404)
-  res.send("404: File Not Found")
-})
-
-app.listen(argv.port || 8080, function () {
-  console.log("Example app listening on port " + argv.port || 8080)
-})
+  app.listen(argv.port || 8080, function () {
+    console.log("Example app listening on port " + argv.port || 8080)
+  })
+}
 
 /**
  * Gets environment configuration and overrides global configurations for server
  */
-function setEnvDirs(environment) {
-  const configuration = getEnvConfiguration(environment)
+async function setEnvDirs(environment, serverMode) {
+  const configuration = await getEnvConfiguration(environment)
   envConfiguration = configuration
 
   const basePath = path.join("dist", configuration.dist.basePath)

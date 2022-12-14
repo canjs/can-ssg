@@ -3,14 +3,13 @@ const { getEnvConfiguration, getEnvAssets, getEnvRoutes } = require("./client-he
 const { copy } = require("fs-extra")
 const getEnvironment = require("./jsdom-ssg/flags/get-ssg-environment")
 
-const environment = getEnvironment()
-const envConfiguration = getEnvConfiguration("prod")
-
-const distDir = path.join("dist", envConfiguration.dist.basePath)
-
 main()
 
 async function main() {
+  const environment = await getEnvironment()
+  const envConfiguration = await getEnvConfiguration("prod")
+  const distDir = path.join("dist", envConfiguration.dist.basePath)
+
   const promises = []
 
   // Read paths to generate static pages

@@ -21,8 +21,8 @@ const argv = require("optimist").argv
  * { defaultEnv: "prod", ... }
  * ```
  */
-module.exports = function (processEnv, argument, ssgConfigurationProp) {
-  const value = getProcessEnvValue(processEnv) || getArgumentValue(argument) || getSsgConfigurationDefault(ssgConfigurationProp)
+module.exports = async function (processEnv, argument, ssgConfigurationProp) {
+  const value = getProcessEnvValue(processEnv) || getArgumentValue(argument) || (await getSsgConfigurationDefault(ssgConfigurationProp))
 
   if (!value) {
     throw new Error(`Unexpected missing flag value: ${value}`)
@@ -52,7 +52,7 @@ function getArgumentValue(argument) {
     return
   }
 
-  return argv[argument]
+  return argument
 }
 
 /**

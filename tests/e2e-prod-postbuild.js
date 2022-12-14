@@ -3,18 +3,17 @@ const { getEnvConfiguration, getEnvAssets, getEnvRoutes } = require("../client-h
 const { copy } = require("fs-extra")
 const getEnvironment = require("../jsdom-ssg/flags/get-ssg-environment.js")
 
-const environment = getEnvironment()
-const envConfiguration = getEnvConfiguration("e2e-prod")
-
-const distDir = path.join("dist", envConfiguration.dist.basePath)
-
 main()
 
 async function main() {
+  const environment = await getEnvironment()
+  const envConfiguration = await getEnvConfiguration("e2e-prod")
+
+  const distDir = path.join("dist", envConfiguration.dist.basePath)
   const promises = []
 
   // Read paths to generate static pages
-  const routes = getEnvRoutes(environment)
+  const routes = await getEnvRoutes(environment)
 
   const staticPath = path.join(distDir, envConfiguration.dist.static)
   // `steal-tools` prefixes where bundles are created with "dist/bundles"

@@ -3,22 +3,22 @@ const path = require("path")
 /**
  * Returns SSG configuration
  */
-let cachedSsgConfiguration
-const getSsgConfiguration = () => {
-  if (!cachedSsgConfiguration) {
-    const ssgConfiguration = require(path.join(process.cwd(), "ssg.json"))
+let cachedSsgConfigurationPromise
+const getSsgConfiguration = async () => {
+  if (!cachedSsgConfigurationPromise) {
+    cachedSsgConfigurationPromise = Promise.resolve(require(path.join(process.cwd(), "ssg")))
+    let ssgConfiguration = await cachedSsgConfigurationPromise
     // Make configuration immutable
     Object.freeze(ssgConfiguration)
-    cachedSsgConfiguration = ssgConfiguration
   }
-  return cachedSsgConfiguration
+  return await cachedSsgConfigurationPromise
 }
 
 /**
  * Returns environment configuration
  */
-const getEnvConfiguration = (env) => {
-  const configuration = getSsgConfiguration().environments[env]
+const getEnvConfiguration = async (env) => {
+  const configuration = (await getSsgConfiguration()).environments[env]
 
   if (!configuration) {
     throw new Error("Unexpected missing environment configuration")
@@ -30,34 +30,34 @@ const getEnvConfiguration = (env) => {
 /**
  * Returns list of environments
  */
-const getEnvironments = () => Object.keys(getSsgConfiguration().environments)
+const getEnvironments = async () => Object.keys((await getSsgConfiguration()).environments)
 
 /**
  * Returns routes for a given environment. If the environment doesn't have any routes,
  * it will return the general configuration's routes
  */
-const getEnvRoutes = (env) => {
-  const envConfiguration = getEnvConfiguration(env)
+const getEnvRoutes = async (env) => {
+  const envConfiguration = await getEnvConfiguration(env)
 
   if (envConfiguration.routes) {
     return envConfiguration.routes
   }
 
-  return getSsgConfiguration().routes || []
+  return (await getSsgConfiguration()).routes || []
 }
 
 /**
  * Returns assets for a given environment. If the environment doesn't have any assets,
  * it will return the general configuration's assets
  */
-const getEnvAssets = (env) => {
-  const envConfiguration = getEnvConfiguration(env)
+const getEnvAssets = async (env) => {
+  const envConfiguration = await getEnvConfiguration(env)
 
   if (envConfiguration.assets) {
     return envConfiguration.assets
   }
 
-  return getSsgConfiguration().assets || []
+  return (await getSsgConfiguration()).assets || []
 }
 
 module.exports = { getSsgConfiguration, getEnvConfiguration, getEnvironments, getEnvRoutes, getEnvAssets }

@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "main.js",
+  "bin": {
+    "can-ssg": "bin/can-ssg.js"
+  },
   "scripts": {
     "prepare": "husky install",
     "build": "node jsdom-ssg/index.js",

@@ -40,13 +40,13 @@ export class Root extends StacheElement {
     }
 
     if (loadId === "moo") {
-      return steal.import(`can-stache-element-ssr/components/moo/moo`).then(() => {
+      return steal.import(`can-ssg/components/moo/moo`).then(() => {
         return document.createElement("progressive-moo")
       })
     }
 
     if (loadId === "cow") {
-      return steal.import(`can-stache-element-ssr/components/cow/cow`).then(() => {
+      return steal.import(`can-ssg/components/cow/cow`).then(() => {
         return document.createElement("progressive-cow")
       })
     }

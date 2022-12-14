@@ -6,15 +6,15 @@ import "../css-example/css-example"
 import "../not-found-example/not-found-example"
 import "../progressive-loading-example/progressive-loading-example"
 
-prepareRouting(route)
+prepareRouting(route).then(() => {
+  // To support express.static, support for trailing `/` must exist
+  route.register("{page}", { page: "home" })
+  route.register("{page}/", { page: "home" }) // To support trailing `/`
+  route.register("progressive-loading/{nestedPage}", { page: "progressive-loading" })
+  route.register("progressive-loading/{nestedPage}/", { page: "progressive-loading" }) // To support trailing `/`
 
-// To support express.static, support for trailing `/` must exist
-route.register("{page}", { page: "home" })
-route.register("{page}/", { page: "home" }) // To support trailing `/`
-route.register("progressive-loading/{nestedPage}", { page: "progressive-loading" })
-route.register("progressive-loading/{nestedPage}/", { page: "progressive-loading" }) // To support trailing `/`
-
-route.start()
+  route.start()
+})
 
 class RouteExample extends StacheElement {
   static view = `
